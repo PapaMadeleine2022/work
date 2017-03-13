@@ -1,0 +1,87 @@
+﻿Installing TensorFlow from Sources
+
+注意：本文中/home/ztgong要换成自己账户的根目录/home/xxxx
+	  建议在个人账户新建local文件夹，以后依赖包都装在这里
+	  
+1、安装anaconda
+	cd ~
+	mkdir local
+	cd packages
+	bash Anaconda2-4.3.0-Linux-x86_64.sh
+	按照提示进行安装，有一歩填写自己的安装路径，如：/home/ztgong/local/anaconda
+	提示添加环境变量，yes
+2、安装JDK1.8
+	tar zxvf jdk-8u121-linux-x64.tar.gz
+	mv jdk1.8.0_121/ ../local/
+	在~/.bashrc中添加环境变量
+	vi ~/.bashrc，输入以下内容：
+	#forJDK1.8
+	export JAVA_HOME=/home/ztgong/local/jdk1.8.0_121
+	export PATH=$JAVA_HOME/bin:$PATH
+	保存退出后
+	source ~/.bashrc，激活
+3、安装cuDNN5.1
+	tar zxvf cudnn-7.5-linux-x64-v5.1.tgz
+	mv cuda cuDNNv5.1
+	mv cuDNNv5.1/ ../local
+	在~/.bashrc中添加环境变量
+	vi ~/.bashrc，输入以下内容：
+	#for cuDNNv5.1
+	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/ztgong/local/cuDNNv5.1/lib64"
+	保存退出后
+	source ~/.bashrc，激活
+	
+4、安装Bazel
+	./bazel-0.4.4-installer-linux-x86_64.sh --user
+	添加环境变量
+	#for bazel
+	export PATH="$PATH:/home/ztgong/bin"
+
+5、安装TensorFlow
+	cd ~
+	git clone https://github.com/tensorflow/tensorflow
+	cd tensorflow
+	git checkout r1.0
+	./configure(按下列提示选择配置)
+	Please specify the location of python. [Default is /usr/bin/python]: /home/ztgong/local/anaconda/bin/python2.7
+	Please specify optimization flags to use during compilation when bazel option "--config=opt" is specified [Default is -march=native]:
+	Do you wish to use jemalloc as the malloc implementation? [Y/n] Y
+	jemalloc enabled
+	Do you wish to build TensorFlow with Google Cloud Platform support? [y/N] N
+	No Google Cloud Platform support will be enabled for TensorFlow
+	Do you wish to build TensorFlow with Hadoop File System support? [y/N] N
+	No Hadoop File System support will be enabled for TensorFlow
+	Do you wish to build TensorFlow with the XLA just-in-time compiler (experimental)? [y/N] N
+	No XLA JIT support will be enabled for TensorFlow
+	Found possible Python library paths:
+	  /usr/local/lib/python2.7/dist-packages
+	  /usr/lib/python2.7/dist-packages
+	Please input the desired Python library path to use.
+	Using python library path: /usr/local/lib/python2.7/dist-packages
+	Do you wish to build TensorFlow with OpenCL support? [y/N] N
+	No OpenCL support will be enabled for TensorFlow
+	Do you wish to build TensorFlow with CUDA support? [y/N] Y
+	CUDA support will be enabled for TensorFlow
+	Please specify which gcc should be used by nvcc as the host compiler. [Default is /usr/bin/gcc]:
+	Please specify the Cuda SDK version you want to use, e.g. 7.0. [Leave empty to use system default]: 7.5
+	Please specify the location where CUDA 8.0 toolkit is installed. Refer to README.md for more details. [Default is /usr/local/cuda]:
+	Please specify the cuDNN version you want to use. [Leave empty to use system default]: 5
+	Please specify the location where cuDNN 5 library is installed. Refer to README.md for more details. [Default is /usr/local/cuda]:/home/ztgong/local/cuDNNv5.1
+	Please specify a list of comma-separated Cuda compute capabilities you want to build with.
+	You can find the compute capability of your device at: https://developer.nvidia.com/cuda-gpus.
+	Please note that each additional compute capability significantly increases your build time and binary size.
+	[Default is: "3.5,5.2"]:
+	
+	bazel build --config=opt //tensorflow/tools/pip_package:build_pip_package
+	bazel build --config=opt --config=cuda //tensorflow/tools/pip_package:build_pip_package
+	
+	bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
+	
+	pip install /tmp/tensorflow_pkg/tensorflow-xxxx.whl 最后一项根据/tmp/tensorflow_pkg下生成的来写，Tab补全
+6、add path to ~/.bashrc
+
+	#CUDA
+	export PATH=/usr/local/cuda/bin:$PATH
+	export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+	
+	source ~/.bashrc
