@@ -1,0 +1,9 @@
+语义理解:
+出发城市 : pittsburgh
+到达城市 : san francisco
+出发日期（星期） : thursday
+出发时间（早/午/晚） : night
+或 : or
+出发日期（星期） : friday
+意图识别:
+用户意图: 航班路线

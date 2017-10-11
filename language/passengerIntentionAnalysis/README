@@ -1,0 +1,18 @@
+依赖软件:
+Python(2.7)
+Tensorflow(1.2.1）
+
+demo.py 包含两个参数，
+１．-s 或 --sample_path，指定示例句子的路径
+２．-l 或 --lang，指定数据集使用的语言
+
+当前可以使用:
+python demo.py -s ./inp_out/inp.txt
+
+
+文件夹解释:
+json: 模型需要的字典文件
+demo_data: 示例数据集
+inp_out: 输入文件与输出文件
+matrix: 模型代码
+model: 经过训练的模型参数，用于加载到模型中
