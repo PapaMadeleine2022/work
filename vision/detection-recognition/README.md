@@ -1,1 +1,1 @@
-### this are some works about detection and recognition. 
+### these are some works about detection and recognition. 

@@ -1,1 +1,1 @@
-### this are some works about algorithm. 
+### these are some works about algorithm. 
