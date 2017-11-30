@@ -89,7 +89,6 @@ resume_training = True
 remove_old_models = False
 
 # The database file for training data. Created by data/VOC0712/create_data.sh
-
 train_data = 'examples/yinlu_part1/yinlu_part1_trainval_lmdb'.format(data_root)
 # The database file for testing data. Created by data/VOC0712/create_data.sh
 test_data = 'examples/yinlu_part1/yinlu_part1_test_lmdb'.format(data_root)
@@ -245,7 +244,7 @@ else:
 # Modify the job name if you want.
 job_name = "SSD_{}".format(resize)
 # The name of the model. Modify it if you want.
-model_name = "VGG_VOC0712_{}".format(job_name)
+model_name = "VGG_{}_{}".format(dataset_name, job_name)
 
 # Directory which stores the model .prototxt file.
 save_dir = "models/VGGNet/{}/{}".format(dataset_name, job_name)
@@ -271,7 +270,7 @@ name_size_file = "data/{}/test_name_size.txt".format(dataset_name)
 # The pretrained model. We use the Fully convolutional reduced (atrous) VGGNet.
 pretrain_model = weights_path
 # Stores LabelMapItem.
-label_map_file = "data/{}/labelmap_voc.prototxt".format(dataset_name)
+label_map_file = "data/{}/labelmap_{}.prototxt".format(dataset_name, dataset_name)
 
 # MultiBoxLoss parameters.
 num_classes = 2
