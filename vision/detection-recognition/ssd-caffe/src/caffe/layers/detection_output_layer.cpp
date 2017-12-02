@@ -92,7 +92,6 @@ void DetectionOutputLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
       infile.close();
       if (save_output_param.has_num_test_image()) {
         num_test_image_ = save_output_param.num_test_image();
-        LOG(INFO)<<"##############num_test_image_:"<<num_test_image_;
       } else {
         num_test_image_ = names_.size();
       }
