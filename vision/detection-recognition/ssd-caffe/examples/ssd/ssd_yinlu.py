@@ -17,8 +17,14 @@ import subprocess
 
 # set some vars
 data_root='/home/ztgong/work/image/data/yinlu'
-dataset_name='yinlu_part1'
+dataset_name='yinlu_part2'
 weights_path='/home/ztgong/work/machinelearning-tools/caffe/caffe-v0.9999/models/VGGNet/VGG_ILSVRC_16_layers_fc_reduced.caffemodel'
+# the number of test set.
+num_test_image_ = 10
+# the number of test_batch_size
+test_batch_size_= 4
+# the number of classes
+num_classes_ = 8
 
 # Add extra layers on top of a "base" network (e.g. VGGNet or Inception).
 def AddExtraLayers(net, use_batchnorm=True, lr_mult=1):
@@ -89,12 +95,12 @@ resume_training = True
 remove_old_models = False
 
 # The database file for training data. Created by data/VOC0712/create_data.sh
-train_data = 'examples/yinlu_part1/yinlu_part1_trainval_lmdb'.format(data_root)
+train_data = 'examples/{}/{}_trainval_lmdb'.format(dataset_name, dataset_name)
 # The database file for testing data. Created by data/VOC0712/create_data.sh
-test_data = 'examples/yinlu_part1/yinlu_part1_test_lmdb'.format(data_root)
+test_data = 'examples/{}/{}_test_lmdb'.format(dataset_name, dataset_name)
 # Specify the batch sampler.
-resize_width = 300
-resize_height = 300
+resize_width = 512
+resize_height = 512
 resize = "{}x{}".format(resize_width, resize_height)
 batch_sampler = [
         {
@@ -183,7 +189,7 @@ batch_sampler = [
         },
         ]
 train_transform_param = {
-        'mirror': True,
+        'mirror': False,
         'mean_value': [104, 117, 123],
         'resize_param': {
                 'prob': 1,
@@ -198,23 +204,23 @@ train_transform_param = {
                         P.Resize.LANCZOS4,
                         ],
                 },
-        'distort_param': {
-                'brightness_prob': 0.5,
-                'brightness_delta': 32,
-                'contrast_prob': 0.5,
-                'contrast_lower': 0.5,
-                'contrast_upper': 1.5,
-                'hue_prob': 0.5,
-                'hue_delta': 18,
-                'saturation_prob': 0.5,
-                'saturation_lower': 0.5,
-                'saturation_upper': 1.5,
-                'random_order_prob': 0.0,
-                },
-        'expand_param': {
-                'prob': 0.5,
-                'max_expand_ratio': 4.0,
-                },
+        # 'distort_param': {
+        #         'brightness_prob': 0.5,
+        #         'brightness_delta': 32,
+        #         'contrast_prob': 0.5,
+        #         'contrast_lower': 0.5,
+        #         'contrast_upper': 1.5,
+        #         'hue_prob': 0.5,
+        #         'hue_delta': 18,
+        #         'saturation_prob': 0.5,
+        #         'saturation_lower': 0.5,
+        #         'saturation_upper': 1.5,
+        #         'random_order_prob': 0.0,
+        #         },
+        # 'expand_param': {
+        #         'prob': 0.5,
+        #         'max_expand_ratio': 4.0,
+        #         },
         'emit_constraint': {
             'emit_type': caffe_pb2.EmitConstraint.CENTER,
             }
@@ -239,7 +245,7 @@ if use_batchnorm:
     base_lr = 0.0004
 else:
     # A learning rate for batch_size = 1, num_gpus = 1.
-    base_lr = 0.00004
+    base_lr = 0.000004
 
 # Modify the job name if you want.
 job_name = "SSD_{}".format(resize)
@@ -273,7 +279,7 @@ pretrain_model = weights_path
 label_map_file = "data/{}/labelmap_{}.prototxt".format(dataset_name, dataset_name)
 
 # MultiBoxLoss parameters.
-num_classes = 2
+num_classes = num_classes_
 share_location = True
 background_label_id=0
 train_on_diff_gt = True
@@ -344,8 +350,8 @@ gpulist = gpus.split(",")
 num_gpus = len(gpulist)
 
 # Divide the mini-batch to different GPUs.
-batch_size = 32
-accum_batch_size = 32
+batch_size = 4
+accum_batch_size = 4
 iter_size = accum_batch_size / batch_size
 solver_mode = P.Solver.CPU
 device_id = 0
@@ -366,8 +372,8 @@ elif normalization_mode == P.Loss.FULL:
   base_lr *= 2000.
 
 # Evaluate on whole test set.
-num_test_image = 4952
-test_batch_size = 8
+num_test_image = num_test_image_ 
+test_batch_size = test_batch_size_
 # Ideally test_batch_size should be divisible by num_test_image,
 # otherwise mAP will be slightly off the true value.
 test_iter = int(math.ceil(float(num_test_image) / test_batch_size))
@@ -377,12 +383,12 @@ solver_param = {
     'base_lr': base_lr,
     'weight_decay': 0.0005,
     'lr_policy': "multistep",
-    'stepvalue': [8000, 10000, 12000],
+    'stepvalue': [600, 8000, 1000],
     'gamma': 0.1,
     'momentum': 0.9,
     'iter_size': iter_size,
-    'max_iter': 12000,
-    'snapshot': 8000,
+    'max_iter': 5000,
+    'snapshot': 4000,
     'display': 10,
     'average_loss': 10,
     'type': "SGD",
@@ -392,7 +398,7 @@ solver_param = {
     'snapshot_after_train': True,
     # Test parameters
     'test_iter': [test_iter],
-    'test_interval': 1000,
+    'test_interval': 200,
     'eval_type': "detection",
     'ap_version': "11point",
     'test_initialization': False,
