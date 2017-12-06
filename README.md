@@ -1,1 +1,1 @@
-# 每天努力一点点
+# Try harder every day
