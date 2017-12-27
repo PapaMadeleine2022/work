@@ -38,20 +38,20 @@ for image in imagelist:
         for object in objectlist:
             namelist =object.getElementsByTagName('name')
             # print 'namelist:',namelist
-            objectname = namelist[0].text
+            objectname = namelist[0].childNodes[0].data
             # print objectname
             print (objectname)
             bndbox=[]
             bndbox.append(object.getElementsByTagName('bndbox')[0])
             for box in bndbox:
                 x1_list = box.getElementsByTagName('xmin')
-                x1 = int(x1_list[0].text)
+                x1 = int(x1_list[0].childNodes[0].data)
                 y1_list = box.getElementsByTagName('ymin')
-                y1 = int(y1_list[0].text)
+                y1 = int(y1_list[0].childNodes[0].data)
                 x2_list = box.getElementsByTagName('xmax')
-                x2 = int(x2_list[0].text)
+                x2 = int(x2_list[0].childNodes[0].data)
                 y2_list = box.getElementsByTagName('ymax')
-                y2 = int(y2_list[0].text)
+                y2 = int(y2_list[0].childNodes[0].data)
                 w = x2 - x1
                 h = y2 - y1
 
