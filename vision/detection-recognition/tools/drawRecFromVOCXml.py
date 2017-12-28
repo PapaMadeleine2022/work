@@ -13,8 +13,6 @@ if not os.path.exists(ProcessedPath):
 
 imagelist = os.listdir(ImgPath)
 
-
-
 for image in imagelist:
     try:
         print ('a new image:', image)
@@ -55,7 +53,22 @@ for image in imagelist:
                 w = x2 - x1
                 h = y2 - y1
 
-                dr.rectangle(((x1, y1),(x2, y2)), outline = "blue")
+                # dr.rectangle(((x1, y1),(x2, y2)), outline = "blue", border="34px")
+
+                #notie: PIL's rectangle doesn't support the width argument.so if you want to change the width of line, please use dr.line
+                #set the width of line
+                line_width=16
+                #set the color of line
+                color='red'
+                line = (x1, y1, x1, y2)
+                dr.line(line, fill=color, width=line_width)
+                line = (x1, y1, x2, y1)
+                dr.line(line, fill=color, width=line_width)
+                line = (x1, y2, x2, y2)
+                dr.line(line, fill=color, width=line_width)
+                line = (x2, y1, x2, y2)
+                dr.line(line, fill=color, width=line_width)
+
                 dr.text((x1, y1-10), objectname, font=fnt, fill=(255,255,255,128))
 
         im.show()
